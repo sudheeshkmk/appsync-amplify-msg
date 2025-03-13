@@ -6,7 +6,7 @@ import { generateClient } from 'aws-amplify/api';
 import { useEffect, useState } from 'react';
 
 import { ToastContainer, toast } from "react-toastify";
-import { onMessagePublishedByAppId } from './graphql/subscriptions';
+import { onMessageByRoomId } from './graphql/subscriptions';
 import "react-toastify/dist/ReactToastify.css";
 
 import config from './aws-exports.js';
@@ -15,7 +15,7 @@ Amplify.configure(config);
 
 const client = generateClient();
 
-let appId = 'Polaris';
+let roomId = '123';
 export default function StarterPage() {
     const [received, setReceived] = useState([]);
 
@@ -24,10 +24,10 @@ export default function StarterPage() {
     console.log("starting starter...")
     // subscribe to events
     useEffect(() => {
-        console.log("subscribing...",appId);
-        const sub = client.graphql({ query: onMessagePublishedByAppId, variables: { appId } }).subscribe({
+        console.log("subscribing...",roomId);
+        const sub = client.graphql({ query: onMessageByRoomId, variables: { roomId } }).subscribe({
             next: (data) => {
-                const newmsg = data.data.onMessagePublishedByAppId
+                const newmsg = data.data.onMessageByRoomId
                 setReceived((prev) => [...prev, newmsg])
                 toast.info(`New Message: ${newmsg.content}`);
             },
@@ -39,7 +39,7 @@ export default function StarterPage() {
     return (
         <div className="App">
             <header className="App-header">
-                <p>Subscribed to application &quot;{appId}&quot;...</p>
+                <p>Subscribed to Space &quot;{roomId}&quot;...</p>
                 <div>
                     <ToastContainer />
 
